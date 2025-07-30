@@ -1,39 +1,99 @@
+const std = @import("std");
 const assert = @import("std").debug.assert;
 const renderErr = @import("../errors/render.zig").RenderError;
 
-pub const Node = struct {
-    // define interface fields: ptr,vtab
-    ptr: *anyopaque, //ptr to instance
-    vtab: *const VTab, //ptr to vtab
+pub const NodeType = enum { element, text, childless, attribute };
 
-    const VTab = struct { // @1/4
-        render: *const fn (ptr: *anyopaque) renderErr!void,
+pub const Node = struct {
+    node_type: NodeType,
+    data: NodeData,
+
+    const NodeData = union(NodeType) { element: ElementData, text: TextData, childless: ChildessElementData, attribute: AtrributeData };
+
+    const ElementData = struct {
+        name: []const u8,
+        children: ?[]const Node,
     };
 
-    // define interface methods wrapping vtable calls
-    pub fn render(self: Node) renderErr!void { // @2/4
-        return self.vtab.render(self.ptr);
+    const TextData = struct {
+        content: []const u8,
+    };
+
+    const ChildessElementData = struct {
+        name: []const u8,
+        children: ?[]const Node,
+    };
+
+    const AtrributeData = struct {
+        name: []const u8,
+        value: ?[]const u8,
+    };
+
+    pub fn render(self: *const Node, mem: std.ArrayList(u8).Writer) renderErr!void {
+        switch (self.data) {
+            .element => |elem| {
+                _ = try mem.write("<");
+                _ = try mem.write(elem.name);
+                _ = try mem.write(">");
+                if (elem.children) |children| {
+                    for (children) |*child| {
+                        try child.render(mem);
+                    }
+                }
+                _ = try mem.write("</");
+                _ = try mem.write(elem.name);
+                _ = try mem.write(">");
+            },
+            .text => |txt| {
+                _ = try mem.write(txt.content);
+            },
+            .childless => |childlessElem| {
+                _ = try mem.write("<");
+                _ = try mem.write(childlessElem.name);
+                if (childlessElem.children) |children| {
+                    for (children) |*child| {
+                        assert(child.node_type == .attribute);
+                        try child.render(mem);
+                    }
+                }
+                _ = try mem.write("/>");
+            },
+            .attribute => |attr| {
+                _ = try mem.write(" ");
+                _ = try mem.write(attr.name);
+                if (attr.value) |attrValue| {
+                    _ = try mem.write("=");
+                    _ = try mem.write(attrValue);
+                }
+            },
+        }
     }
 
-    // cast concrete implementation types/objs to interface
-    pub fn init(obj: anytype) Node {
-        const Ptr = @TypeOf(obj);
-        const PtrInfo = @typeInfo(Ptr);
-        // @import("std").builtin.Type
-        assert(PtrInfo == .pointer); // Must be a pointer
-        assert(PtrInfo.pointer.size == .one); // Must be a single-item pointer
-        assert(@typeInfo(PtrInfo.pointer.child) == .@"struct"); // Must point to a struct
-        const impl = struct {
-            fn render(ptr: *anyopaque) renderErr!void { // @3/4
-                const self: Ptr = @ptrCast(@alignCast(ptr));
-                return self.render();
-            }
+    pub fn element(name: []const u8, children: ?[]const Node) Node {
+        return Node{
+            .node_type = .element,
+            .data = .{ .element = .{ .name = name, .children = children } },
         };
-        return .{
-            .ptr = obj,
-            .vtab = &.{ // @4/4
-                .render = impl.render,
-            },
+    }
+
+    pub fn text(content: []const u8) Node {
+        return Node{
+            .node_type = .text,
+            .data = .{ .text = .{ .content = content } },
+        };
+    }
+
+    pub fn childlessElement(name: []const u8, children: ?[]const Node) Node {
+        return Node{
+            .node_type = .childless,
+            .data = .{ .childless = .{ .name = name, .children = children } },
+        };
+    }
+
+    pub fn attribute(name: []const u8, value: ?[]const u8) Node {
+        return Node{
+            .node_type = .attribute,
+            .data = .{ .attribute = .{ .name = name, .value = value } },
         };
     }
 };

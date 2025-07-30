@@ -1,23 +1,15 @@
+const std = @import("std");
 const renderErr = @import("../errors/render.zig").RenderError;
 const Node = @import("../interfaces/node.zig").Node;
 
-const node = struct {
-    pub fn render(self: *node) !void {
-        _ = self;
-        return;
-    }
-};
+pub fn El(name: []const u8, children: ?[]const Node) Node {
+    return Node.element(name, children);
+}
 
-pub fn El(name: []const u8, nodes: ?[]Node) Node {
-    if (nodes != null) {
-        const _nodes = nodes.?;
-        for (_nodes) |n| {
-            n.render() catch {};
-        }
-    }
-    _ = name;
-    // _ = nodes;
-    var n = node{};
-    const nodeEl = Node.init(&n);
-    return nodeEl;
+pub fn Attr(name: []const u8, value: ?[]const u8) Node {
+    return Node.attribute(name, value);
+}
+
+pub fn Childless(name: []const u8, children: ?[]const Node) Node {
+    return Node.childlessElement(name, children);
 }
