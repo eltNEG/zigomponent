@@ -180,6 +180,14 @@ pub fn Text(text: []const u8) Node {
     return Node.text(text);
 }
 
+pub fn Title(nodes: ?[]const Node) Node {
+    return EL("title", nodes);
+}
+
+pub fn Title2(text: []const u8) Node {
+    return EL("title", &[_]Node{Text(text)[0..]});
+}
+
 pub fn P(nodes: ?[]const Node) Node {
     return EL("p", nodes);
 }
