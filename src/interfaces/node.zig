@@ -34,10 +34,19 @@ pub const Node = struct {
             .element => |elem| {
                 _ = try mem.write("<");
                 _ = try mem.write(elem.name);
+                if (elem.children) |children| {
+                    for (children) |*child| {
+                        if (child.node_type == .attribute) {
+                            try child.render(mem);
+                        }
+                    }
+                }
                 _ = try mem.write(">");
                 if (elem.children) |children| {
                     for (children) |*child| {
-                        try child.render(mem);
+                        if (child.node_type != .attribute) {
+                            try child.render(mem);
+                        }
                     }
                 }
                 _ = try mem.write("</");

@@ -1,14 +1,10 @@
 const std = @import("std");
+pub const el = @import("./components/elements.zig");
+pub const attr = @import("./components/atributes.zig");
+pub const wrappers = @import("./components/wrapper.zig");
+pub const Node = @import("./interfaces/node.zig").Node;
 
-pub fn Build() []const u8 {
-    return "<html>Hello, World!</html>";
-}
-
-pub fn add(a: i32, b: i32) i32 {
-    return a + b;
-}
-
-test "Build" {
-    const expected = "<html>Hello, World!</html>";
-    try std.testing.expect(std.mem.eql(u8, Build(), expected));
+test {
+    std.testing.log_level = .warn;
+    std.testing.refAllDeclsRecursive(@This());
 }

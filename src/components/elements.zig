@@ -1,179 +1,192 @@
 const Node = @import("../interfaces/node.zig").Node;
-const EL = @import("./element.zig").El;
+const Element = @import("./wrapper.zig").El;
+const Childless = @import("./wrapper.zig").Childless;
+
+pub fn Input(nodes: ?[]const Node) Node {
+    return Childless("input", nodes);
+}
 
 pub fn A(nodes: ?[]const Node) Node {
-    return EL("a", nodes);
+    return Element("a", nodes);
 }
 pub fn Address(nodes: ?[]const Node) Node {
-    return EL("address", nodes);
+    return Element("address", nodes);
 }
 
 pub fn Article(nodes: ?[]const Node) Node {
-    return EL("article", nodes);
+    return Element("article", nodes);
 }
 
 pub fn Aside(nodes: ?[]const Node) Node {
-    return EL("aside", nodes);
+    return Element("aside", nodes);
 }
 
 pub fn Audio(nodes: ?[]const Node) Node {
-    return EL("audio", nodes);
+    return Element("audio", nodes);
 }
 
 pub fn Base(nodes: ?[]const Node) Node {
-    return EL("base", nodes);
+    return Element("base", nodes);
 }
 
 pub fn Body(nodes: ?[]const Node) Node {
-    return EL("body", nodes);
+    return Element("body", nodes);
 }
 
 pub fn Br(nodes: ?[]const Node) Node {
-    return EL("br", nodes);
+    return Element("br", nodes);
 }
 
 pub fn Button(nodes: ?[]const Node) Node {
-    return EL("button", nodes);
+    return Element("button", nodes);
 }
 
 pub fn Canvas(nodes: ?[]const Node) Node {
-    return EL("canvas", nodes);
+    return Element("canvas", nodes);
 }
 
 pub fn Data(nodes: ?[]const Node) Node {
-    return EL("data", nodes);
+    return Element("data", nodes);
 }
 
 pub fn DataList(nodes: ?[]const Node) Node {
-    return EL("datalist", nodes);
+    return Element("datalist", nodes);
 }
 
 pub fn Details(nodes: ?[]const Node) Node {
-    return EL("details", nodes);
+    return Element("details", nodes);
 }
 
 pub fn Dialog(nodes: ?[]const Node) Node {
-    return EL("dialog", nodes);
+    return Element("dialog", nodes);
 }
 
 pub fn Div(nodes: ?[]const Node) Node {
-    return EL("div", nodes);
+    return Element("div", nodes);
 }
 
 pub fn Dl(nodes: ?[]const Node) Node {
-    return EL("dl", nodes);
+    return Element("dl", nodes);
 }
 
 pub fn Em(nodes: ?[]const Node) Node {
-    return EL("em", nodes);
+    return Element("em", nodes);
 }
 
 pub fn Fieldset(nodes: ?[]const Node) Node {
-    return EL("fieldset", nodes);
+    return Element("fieldset", nodes);
 }
 
 pub fn Figcaption(nodes: ?[]const Node) Node {
-    return EL("figcaption", nodes);
+    return Element("figcaption", nodes);
 }
 
 pub fn Figure(nodes: ?[]const Node) Node {
-    return EL("figure", nodes);
+    return Element("figure", nodes);
 }
 
 pub fn Footer(nodes: ?[]const Node) Node {
-    return EL("footer", nodes);
+    return Element("footer", nodes);
 }
 
 pub fn Form(nodes: ?[]const Node) Node {
-    return EL("form", nodes);
+    return Element("form", nodes);
 }
 
 pub fn Header(nodes: ?[]const Node) Node {
-    return EL("header", nodes);
+    return Element("header", nodes);
 }
 
 pub fn H1(nodes: ?[]const Node) Node {
-    return EL("h1", nodes);
+    return Element("h1", nodes);
 }
 
 pub fn H2(nodes: ?[]const Node) Node {
-    return EL("h2", nodes);
+    return Element("h2", nodes);
 }
 
 pub fn H3(nodes: ?[]const Node) Node {
-    return EL("h3", nodes);
+    return Element("h3", nodes);
 }
 
 pub fn H4(nodes: ?[]const Node) Node {
-    return EL("h4", nodes);
+    return Element("h4", nodes);
 }
 
 pub fn H5(nodes: ?[]const Node) Node {
-    return EL("h5", nodes);
+    return Element("h5", nodes);
 }
 
 pub fn H6(nodes: ?[]const Node) Node {
-    return EL("h6", nodes);
+    return Element("h6", nodes);
 }
 
 pub fn Hgroup(nodes: ?[]const Node) Node {
-    return EL("hgroup", nodes);
+    return Element("hgroup", nodes);
 }
 
 pub fn Head(nodes: ?[]const Node) Node {
-    return EL("head", nodes);
+    return Element("head", nodes);
 }
 
 pub fn Html(nodes: ?[]const Node) Node {
-    return EL("html", nodes);
+    return Element("html", nodes);
 }
 
 pub fn I(nodes: ?[]const Node) Node {
-    return EL("i", nodes);
+    return Element("i", nodes);
 }
 
 pub fn Iframe(nodes: ?[]const Node) Node {
-    return EL("iframe", nodes);
+    return Element("iframe", nodes);
 }
 
 pub fn Img(nodes: ?[]const Node) Node {
-    return EL("img", nodes);
+    return Element("img", nodes);
 }
 
-pub fn Input(nodes: ?[]const Node) Node {
-    return EL("input", nodes);
-}
-
-pub fn Label(nodes: ?[]const Node) Node {
-    return EL("label", nodes);
+pub fn LabElement(nodes: ?[]const Node) Node {
+    return Element("label", nodes);
 }
 
 pub fn Li(nodes: ?[]const Node) Node {
-    return EL("li", nodes);
+    return Element("li", nodes);
 }
 
 pub fn Ol(nodes: ?[]const Node) Node {
-    return EL("ol", nodes);
+    return Element("ol", nodes);
 }
 
 pub fn Ul(nodes: ?[]const Node) Node {
-    return EL("ul", nodes);
+    return Element("ul", nodes);
 }
 
 pub fn Nav(nodes: ?[]const Node) Node {
-    return EL("nav", nodes);
+    return Element("nav", nodes);
 }
 
 pub fn Section(nodes: ?[]const Node) Node {
-    return EL("section", nodes);
+    return Element("section", nodes);
 }
 
 pub fn Main(nodes: ?[]const Node) Node {
-    return EL("main", nodes);
+    return Element("main", nodes);
+}
+
+pub fn Meta(nodes: ?[]const Node) Node {
+    return Childless("meta", nodes);
+}
+
+pub fn Menu(nodes: ?[]const Node) Node {
+    return Element("menu", nodes);
+}
+
+pub fn Link(nodes: ?[]const Node) Node {
+    return Element("link", nodes);
 }
 
 pub fn Span(nodes: ?[]const Node) Node {
-    return EL("span", nodes);
+    return Element("span", nodes);
 }
 
 pub fn Text(text: []const u8) Node {
@@ -181,13 +194,9 @@ pub fn Text(text: []const u8) Node {
 }
 
 pub fn Title(nodes: ?[]const Node) Node {
-    return EL("title", nodes);
-}
-
-pub fn Title2(text: []const u8) Node {
-    return EL("title", &[_]Node{Text(text)[0..]});
+    return Element("title", nodes);
 }
 
 pub fn P(nodes: ?[]const Node) Node {
-    return EL("p", nodes);
+    return Element("p", nodes);
 }
