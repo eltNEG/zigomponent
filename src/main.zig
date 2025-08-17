@@ -7,7 +7,12 @@ const sample = @import("sample.zig");
 const server = @import("server.zig");
 
 pub fn main() !void {
-    const allocator = std.heap.page_allocator;
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    const allocator = gpa.allocator();
+    defer {
+        const deinit_status = gpa.deinit();
+        if (deinit_status == .leak) std.testing.expect(false) catch @panic("Leak detected!");
+    }
     var arr = std.ArrayList(u8).init(allocator);
     defer arr.deinit();
     const writer = arr.writer();
