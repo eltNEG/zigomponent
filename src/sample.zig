@@ -3,12 +3,7 @@ const z = @import("zigomponents");
 const el = z.el;
 const attr = z.attr;
 
-pub fn run() !void {
-    const allocator = std.heap.page_allocator;
-    var arr = std.ArrayList(u8).init(allocator);
-    defer arr.deinit();
-    const writer = arr.writer();
-
+pub fn run(writer: std.ArrayList(u8).Writer) !void {
     const head = el.Head(&.{
         el.Meta(&.{attr.Charset("UTF-8")}),
         el.Meta(&.{ attr.Name("viewport"), attr.Content("width=device-width, initial-scale=1.0") }),
@@ -518,8 +513,8 @@ pub fn run() !void {
 
     try html.render(writer);
 
-    const fs = std.fs.cwd();
-    const file = try fs.createFile("output.html", .{});
-    defer file.close();
-    try file.writeAll(arr.items);
+    // const fs = std.fs.cwd();
+    // const file = try fs.createFile("output.html", .{});
+    // defer file.close();
+    // try file.writeAll(arr.items);
 }

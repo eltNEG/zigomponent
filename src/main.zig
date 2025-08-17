@@ -4,25 +4,16 @@ const el = z.el;
 const attr = z.attr;
 const Node = z.Node;
 const sample = @import("sample.zig");
+const server = @import("server.zig");
 
 pub fn main() !void {
-    // const allocator = std.heap.page_allocator;
-    // var arr = std.ArrayList(u8).init(allocator);
-    // defer arr.deinit();
-
-    // const p = el.P(&.{el.Text("This is a paragraph.")});
-    // const div = el.Div(&.{el.Text("Hello world!")});
-
-    // const html = el.Html(&.{el.Body(&.{ div, p })});
-
-    // const writer = arr.writer();
-
-    // try html.render(writer);
-
-    // const res = arr.items;
-
-    // std.debug.print("Rendered HTML: {s}\n", .{res});
-    try sample.run();
+    const allocator = std.heap.page_allocator;
+    var arr = std.ArrayList(u8).init(allocator);
+    defer arr.deinit();
+    const writer = arr.writer();
+    try sample.run(writer);
+    const samplePage = arr.items;
+    try server.runServer(samplePage);
 }
 
 fn Page(n: []const Node) Node {
