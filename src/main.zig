@@ -3,24 +3,26 @@ const z = @import("zigomponents");
 const el = z.el;
 const attr = z.attr;
 const Node = z.Node;
+const sample = @import("sample.zig");
 
 pub fn main() !void {
-    const allocator = std.heap.page_allocator;
-    var arr = std.ArrayList(u8).init(allocator);
-    defer arr.deinit();
+    // const allocator = std.heap.page_allocator;
+    // var arr = std.ArrayList(u8).init(allocator);
+    // defer arr.deinit();
 
-    const p = el.P(&.{el.Text("This is a paragraph.")});
-    const div = el.Div(&.{el.Text("Hello world!")});
+    // const p = el.P(&.{el.Text("This is a paragraph.")});
+    // const div = el.Div(&.{el.Text("Hello world!")});
 
-    const html = el.Html(&.{el.Body(&.{ div, p })});
+    // const html = el.Html(&.{el.Body(&.{ div, p })});
 
-    const writer = arr.writer();
+    // const writer = arr.writer();
 
-    try html.render(writer);
+    // try html.render(writer);
 
-    const res = arr.items;
+    // const res = arr.items;
 
-    std.debug.print("Rendered HTML: {s}\n", .{res});
+    // std.debug.print("Rendered HTML: {s}\n", .{res});
+    try sample.run();
 }
 
 fn Page(n: []const Node) Node {
@@ -58,7 +60,7 @@ test "html5" {
         attr.Lang("en"),
         el.Head(&.{
             el.Meta(&.{attr.Charset("UTF-8")}),
-            el.Meta(&.{ attr.Name("viewport"), attr.Content("\"width=device-width, initial-scale=1\"") }),
+            el.Meta(&.{ attr.Name("viewport"), attr.Content("width=device-width, initial-scale=1") }),
             el.Title(&.{el.Text("Document")}),
         }),
         el.Body(&.{el.Div(&.{

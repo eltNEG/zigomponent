@@ -71,8 +71,9 @@ pub const Node = struct {
                 _ = try mem.write(" ");
                 _ = try mem.write(attr.name);
                 if (attr.value) |attrValue| {
-                    _ = try mem.write("=");
+                    _ = try mem.write("=\"");
                     _ = try mem.write(attrValue);
+                    _ = try mem.write("\"");
                 }
             },
         }
