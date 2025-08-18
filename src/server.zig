@@ -7,7 +7,7 @@ const Connection = std.net.Server.Connection;
 const MAX_BUF = 1024;
 
 pub fn runServer(page: []u8) !void {
-    const addr = try std.net.Address.parseIp("127.0.0.1", 8080);
+    const addr = try std.net.Address.parseIp("0.0.0.0", 3006);
     var server = try std.net.Address.listen(addr, .{ .reuse_address = true });
     defer server.deinit();
 
