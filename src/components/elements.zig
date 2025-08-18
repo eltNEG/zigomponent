@@ -182,7 +182,7 @@ pub fn Menu(nodes: ?[]const Node) Node {
 }
 
 pub fn Link(nodes: ?[]const Node) Node {
-    return Element("link", nodes);
+    return Childless("link", nodes);
 }
 
 pub fn Span(nodes: ?[]const Node) Node {
@@ -195,6 +195,18 @@ pub fn Text(text: []const u8) Node {
 
 pub fn Title(nodes: ?[]const Node) Node {
     return Element("title", nodes);
+}
+
+pub fn Script(nodes: ?[]const Node) Node {
+    return Element("script", nodes);
+}
+
+pub fn Pre(nodes: ?[]const Node) Node {
+    return Element("pre", nodes);
+}
+
+pub fn Code(nodes: ?[]const Node) Node {
+    return Element("code", nodes);
 }
 
 pub fn P(nodes: ?[]const Node) Node {
