@@ -2,16 +2,20 @@ const std = @import("std");
 const assert = @import("std").debug.assert;
 const renderErr = @import("../errors/render.zig").RenderError;
 
-pub const NodeType = enum { element, text, childless, attribute };
+pub const NodeType = enum { element, text, childless, attribute, nodes };
 
 pub const Node = struct {
     node_type: NodeType,
     data: NodeData,
 
-    const NodeData = union(NodeType) { element: ElementData, text: TextData, childless: ChildessElementData, attribute: AtrributeData };
+    const NodeData = union(NodeType) { element: ElementData, text: TextData, childless: ChildessElementData, attribute: AtrributeData, nodes: NodesData };
 
     const ElementData = struct {
         name: []const u8,
+        children: ?[]const Node,
+    };
+
+    const NodesData = struct {
         children: ?[]const Node,
     };
 
@@ -76,6 +80,13 @@ pub const Node = struct {
                     _ = try mem.write("\"");
                 }
             },
+            .nodes => |nodes| {
+                if (nodes.children) |children| {
+                    for (children) |*child| {
+                        try child.render(mem);
+                    }
+                }
+            },
         }
     }
 
@@ -83,6 +94,13 @@ pub const Node = struct {
         return Node{
             .node_type = .element,
             .data = .{ .element = .{ .name = name, .children = children } },
+        };
+    }
+
+    pub fn toNodes(children: ?[]const Node) Node {
+        return Node{
+            .node_type = .element,
+            .data = .{ .nodes = .{ .children = children } },
         };
     }
 

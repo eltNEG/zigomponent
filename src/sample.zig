@@ -506,16 +506,11 @@ pub fn run(writer: std.ArrayList(u8).Writer) !void {
         footer,
     });
 
-    const html = el.Html(&.{
+    const html = el.ToNode(&.{ el.Raw("<!DOCTYPE html>"), el.Html(&.{
         attr.Lang("en"),
         head,
         body,
-    });
+    }) });
 
     try html.render(writer);
-
-    // const fs = std.fs.cwd();
-    // const file = try fs.createFile("output.html", .{});
-    // defer file.close();
-    // try file.writeAll(arr.items);
 }

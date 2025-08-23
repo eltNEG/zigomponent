@@ -1,5 +1,6 @@
 const Node = @import("../interfaces/node.zig").Node;
 const Element = @import("./wrapper.zig").El;
+const NodesToNode = @import("./wrapper.zig").NodesToNode;
 const Childless = @import("./wrapper.zig").Childless;
 
 pub fn Input(nodes: ?[]const Node) Node {
@@ -131,6 +132,14 @@ pub fn Head(nodes: ?[]const Node) Node {
 
 pub fn Html(nodes: ?[]const Node) Node {
     return Element("html", nodes);
+}
+
+pub fn ToNode(nodes: ?[]const Node) Node {
+    return NodesToNode(nodes);
+}
+
+pub fn Raw(text: []const u8) Node {
+    return Text(text);
 }
 
 pub fn I(nodes: ?[]const Node) Node {
