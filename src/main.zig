@@ -13,9 +13,9 @@ pub fn main() !void {
         const deinit_status = gpa.deinit();
         if (deinit_status == .leak) std.testing.expect(false) catch @panic("Leak detected!");
     }
-    var arr = std.ArrayList(u8).init(allocator);
-    defer arr.deinit();
-    const writer = arr.writer();
+    var arr: std.ArrayList(u8) = .{}; //.init(allocator);
+    defer arr.deinit(allocator);
+    const writer = arr.writer(allocator);
     try sample.run(writer);
     const samplePage = arr.items;
     try server.runServer(samplePage);
@@ -28,9 +28,9 @@ fn Page(n: []const Node) Node {
 
 test "components" {
     const allocator = std.heap.page_allocator;
-    var arr = std.ArrayList(u8).init(allocator);
-    defer arr.deinit();
-    const writer = arr.writer();
+    var arr: std.ArrayList(u8) = .{}; //.init(allocator);
+    defer arr.deinit(allocator);
+    const writer = arr.writer(allocator);
 
     const html = Page(&.{
         el.Head(&.{
@@ -48,9 +48,9 @@ test "components" {
 
 test "html5" {
     const allocator = std.heap.page_allocator;
-    var arr = std.ArrayList(u8).init(allocator);
-    defer arr.deinit();
-    const writer = arr.writer();
+    var arr: std.ArrayList(u8) = .{}; //.init(allocator);
+    defer arr.deinit(allocator);
+    const writer = arr.writer(allocator);
 
     const html = el.Html(&.{
         attr.Lang("en"),
