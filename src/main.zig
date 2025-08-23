@@ -70,5 +70,5 @@ test "html5" {
 
     const res = arr.items;
 
-    try std.testing.expectEqualStrings(res, "<html lang=en><head><meta charset=UTF-8/><meta name=viewport content=\"width=device-width, initial-scale=1\"/><title>Document</title></head><body><div class=my-class data-username=johndoes>Hello world!</div></body></html>");
+    try std.testing.expectEqualStrings(res, "<html lang=\"en\"><head><meta charset=\"UTF-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><title>Document</title></head><body><div class=\"my-class\" data-username=\"johndoes\">Hello world!</div></body></html>");
 }
