@@ -11,7 +11,7 @@ pub fn runServer(page: []u8) !void {
     var server = try std.net.Address.listen(addr, .{ .reuse_address = true });
     defer server.deinit();
 
-    log.info("Start HTTP server at http://{any}", .{addr});
+    log.info("Start HTTP server at {s}", .{"http://localhost:3006"});
 
     while (true) {
         const conn = server.accept() catch |err| {
@@ -29,47 +29,23 @@ pub fn runServer(page: []u8) !void {
 fn accept(conn: Connection, page: []u8) !void {
     defer conn.stream.close();
     var read_buffer: [MAX_BUF]u8 = undefined;
-    var server = std.http.Server.init(conn, &read_buffer);
-    while (server.state == .ready) {
+    var in = conn.stream.reader(&read_buffer);
+    var write_buffer: [MAX_BUF]u8 = undefined;
+    var out = conn.stream.writer(&write_buffer);
+    var server = std.http.Server.init(in.interface(), &out.interface);
+    while (server.reader.state == .ready) {
         var request = server.receiveHead() catch |err| switch (err) {
             error.HttpConnectionClosing => return,
             else => return err,
         };
 
-        var ws: WebSocket = undefined;
-        var send_buf: [MAX_BUF]u8 = undefined;
-        var recv_buf: [MAX_BUF]u8 align(4) = undefined;
-
-        if (try ws.init(&request, &send_buf, &recv_buf)) {
-            // Upgrade to web socket successfully.
-            serveWebSocket(&ws) catch |err| switch (err) {
-                error.ConnectionClose => {
-                    log.info("Client({any}) closed!", .{conn.address});
-                    break;
-                },
-                else => return err,
-            };
-        } else {
-            try serveHTTP(&request, page);
-        }
+        try serveHTTP(&request, page);
     }
 }
 
 fn serveHTTP(request: *Request, page: []u8) !void {
     try request.respond(
         page,
-        .{
-            .extra_headers = &.{
-                .{ .name = "custom header", .value = "custom value" },
-            },
-        },
+        .{},
     );
-}
-
-fn serveWebSocket(ws: *WebSocket) !void {
-    try ws.writeMessage("Message from zig", .text);
-    while (true) {
-        const msg = try ws.readSmallMessage();
-        try ws.writeMessage(msg.data, msg.opcode);
-    }
 }
