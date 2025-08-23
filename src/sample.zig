@@ -42,7 +42,7 @@ pub fn run(writer: std.ArrayList(u8).Writer) !void {
                     }),
                 }),
                 el.Nav(&.{
-                    attr.Class("hidden md:flex space-x-6"),
+                    attr.Class("hidden md:flex items-center space-x-6"),
                     el.A(&.{
                         attr.Href("#features"),
                         attr.Class("text-gray-600 hover:text-orange-500 transition-colors"),
@@ -259,13 +259,6 @@ pub fn run(writer: std.ArrayList(u8).Writer) !void {
                         attr.Class("text-gray-400 mb-4"),
                         el.Text("HTML generation for Zig, inspired by gomponents. Build type-safe, composable HTML components with the power of Zig."),
                     }),
-                    // Mobile Menu Button
-                    el.Button(&.{
-                        attr.Class("md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500"),
-                        attr.Type("button"),
-                        attr.Aria("expanded", "false"),
-                        el.Text("Menu"),
-                    }),
                 }),
                 el.Div(&.{
                     el.H6(&.{
@@ -283,9 +276,10 @@ pub fn run(writer: std.ArrayList(u8).Writer) !void {
                         }),
                         el.Li(&.{
                             el.A(&.{
-                                attr.Href("#"),
+                                attr.Href("https://github.com/eltNEG/zigomponent/blob/master/src/sample.zig"),
+                                attr.Target("_blank"),
                                 attr.Class("hover:text-white transition-colors"),
-                                el.Text("Examples"),
+                                el.Text("Example"),
                             }),
                         }),
                     }),
@@ -299,16 +293,10 @@ pub fn run(writer: std.ArrayList(u8).Writer) !void {
                         attr.Class("space-y-2 text-gray-400"),
                         el.Li(&.{
                             el.A(&.{
-                                attr.Href("#"),
+                                attr.Href("https://github.com/eltNEG/zigomponent"),
+                                attr.Target("_blank"),
                                 attr.Class("hover:text-white transition-colors"),
                                 el.Text("GitHub"),
-                            }),
-                        }),
-                        el.Li(&.{
-                            el.A(&.{
-                                attr.Href("#"),
-                                attr.Class("hover:text-white transition-colors"),
-                                el.Text("Discord"),
                             }),
                         }),
                     }),
@@ -317,7 +305,7 @@ pub fn run(writer: std.ArrayList(u8).Writer) !void {
             el.Div(&.{
                 attr.Class("border-t border-gray-800 mt-8 pt-8 text-center text-gray-400"),
                 el.P(&.{
-                    el.Text("© 2024 Zigomponent. MIT License."),
+                    el.Text("© 2025 Zigomponent. MIT License."),
                 }),
             }),
         }),
