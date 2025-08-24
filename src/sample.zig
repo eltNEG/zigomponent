@@ -338,9 +338,10 @@ pub fn run(writer: std.ArrayList(u8).Writer) !void {
             }),
             el.Div(&.{
                 attr.Class("space-y-8"),
-                Snippet("1. Add to your build.zig", addDependency).New(),
-                Snippet("2. Import in your code", importDependency).New(),
-                Snippet("3. Use in your code", useComponents).New(),
+                Snippet("1. Add zigomponent to your project", "$ zig fetch --save git+https://github.com/eltNEG/zigomponent;").New(),
+                Snippet("2. Update your build.zig", addDependency).New(),
+                Snippet("3. Import in your code", importDependency).New(),
+                Snippet("4. Use in your code", useComponents).New(),
             }),
         }),
     });

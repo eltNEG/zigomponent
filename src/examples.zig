@@ -1,37 +1,47 @@
 pub const mainExample =
-    \\const allocator = std.heap.page_allocator;
-    \\var arr = std.ArrayList(u8).init(allocator);
-    \\defer arr.deinit();
-    \\const writer = arr.writer();
+    \\const std = @import("std");
+    \\const z = @import("zigomponent");
+    \\const el = z.el;
+    \\const attr = z.attr;
     \\
-    \\const html = el.Html(&.{
-    \\    attr.Lang("en"),
-    \\    el.Head(&.{
-    \\        el.Title(&.{
-    \\            el.Text("My Zig App"),
-    \\        }),
-    \\        el.Meta(&.{
-    \\            attr.Charset("UTF-8"),
-    \\        }),
-    \\    }),
-    \\    el.Body(&.{
-    \\        el.H1(&.{
-    \\            attr.Class("text-4xl font-bold text-center"),
-    \\            el.Text("Welcome to Zigomponent!"),
-    \\        }),
-    \\        el.P(&.{
-    \\            attr.Class("text-lg text-gray-600 mt-4"),
-    \\            el.Text("Build HTML with the power of Zig."),
-    \\        }),
-    \\        el.Button(&.{
-    \\            attr.Class("bg-blue-500 text-white px-4 py-2 rounded"),
-    \\            attr.OnClick("alert('Hello from Zig!')"),
-    \\            el.Text("Click me!"),
-    \\        }),
-    \\    }),
-    \\});
+    \\pub fn main() !void {
+    \\    const allocator = std.heap.page_allocator;
+    \\    var arr: std.ArrayList(u8) = .{};
+    \\    defer arr.deinit(allocator);
+    \\    const writer = arr.writer(allocator);
+    \\    const docType = "\<\!DOCTYPE html\>"; // remove all '\' on this line
     \\
-    \\try html.render(writer);
+    \\    const html = el.ToNode(&.{
+    \\        el.Raw(docType),
+    \\        el.Html(&.{
+    \\            attr.Lang("en"),
+    \\            el.Head(&.{
+    \\                el.Meta(&.{attr.Charset("UTF-8")}),
+    \\                el.Meta(&.{ attr.Name("viewport"), attr.Content("width=device-width, initial-scale=1") }),
+    \\                el.Title(&.{el.Text("Document")}),
+    \\            }),
+    \\            el.Body(&.{el.Div(&.{
+    \\                el.H1(&.{
+    \\                    attr.Style("color: blue; margin-top: 20px; margin-bottom: 20px;"),
+    \\                    el.Text("Welcome to Zigomponent!"),
+    \\                }),
+    \\                el.P(&.{
+    \\                    el.Text("Build HTML with the power of Zig."),
+    \\                }),
+    \\                el.Button(&.{
+    \\                    attr.OnClick("alert('Hello from Zig!')"),
+    \\                    el.Text("Click me!"),
+    \\                }),
+    \\            })}),
+    \\        }),
+    \\    });
+    \\
+    \\    try html.render(writer);
+    \\
+    \\    const res = arr.items;
+    \\    std.debug.print("{s}", .{res});
+    \\}
+    \\
 ;
 
 pub const formExample =
@@ -59,26 +69,34 @@ pub const formExample =
 ;
 
 pub const cardExample =
-    \\fn Card(title: []const u8, content: []const u8) Node {
-    \\    return el.Div(&.{
-    \\        attr.Class("card shadow-lg"),
-    \\        el.Div(&.{
-    \\            attr.Class("card-header"),
-    \\            el.H3(&.{
-    \\                el.Text(title),
+    \\fn Card(title: []const u8, content: []const u8) type {
+    \\    return struct {
+    \\        const card = el.Div(&.{
+    \\            attr.Class("card shadow-lg"),
+    \\            el.Div(&.{
+    \\                attr.Class("card-header"),
+    \\                el.H3(&.{
+    \\                    el.Text(title),
+    \\                }),
     \\            }),
-    \\        }),
-    \\        el.Div(&.{
-    \\            attr.Class("card-body"),
-    \\            el.P(&.{
-    \\                el.Text(content),
+    \\            el.Div(&.{
+    \\                attr.Class("card-body"),
+    \\                el.P(&.{
+    \\                    el.Text(content),
+    \\                }),
     \\            }),
-    \\        }),
-    \\    });
+    \\        });
+    \\
+    \\        fn New() z.Node {
+    \\            return card;
+    \\        }
+    \\    };
     \\}
 ;
 
 pub const addDependency =
+    \\b.installArtifact(exe); // This line should already be in your build.zig file
+    \\
     \\const zigomponent = b.dependency("zigomponent", .{
     \\    .target = target,
     \\    .optimize = optimize,
@@ -88,8 +106,9 @@ pub const addDependency =
 ;
 
 pub const importDependency =
-    \\const std = @import("std");
-    \\const el = @import("zigomponent");
+    \\const z = @import("zigomponent");
+    \\const el = z.el;
+    \\const attr = z.attr;
 ;
 
 pub const useComponents =
