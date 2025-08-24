@@ -41,6 +41,10 @@ pub fn Draggable(value: []const u8) Node {
     return Attr("draggable", value);
 }
 
+pub fn OnClick(value: []const u8) Node {
+    return Attr("onclick", value);
+}
+
 // pub fn DragDrop() Node {
 //     return Attr("draggable", null);
 // }
