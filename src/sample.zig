@@ -2,6 +2,75 @@ const std = @import("std");
 const z = @import("zigomponents");
 const el = z.el;
 const attr = z.attr;
+const eg = @import("examples.zig");
+const formExample = eg.formExample;
+const cardExample = eg.cardExample;
+const mainExample = eg.mainExample;
+const addDependency = eg.addDependency;
+const importDependency = eg.importDependency;
+const useComponents = eg.useComponents;
+
+fn NavLink(label: []const u8, href: []const u8) [3]z.Node {
+    return .{
+        attr.Href(href),
+        attr.Class("text-gray-600 hover:text-orange-500 transition-colors"),
+        el.Text(label),
+    };
+}
+
+fn Features(_title: []const u8, _text: []const u8) type {
+    return struct {
+        const title = .{
+            attr.Class("text-xl font-semibold text-gray-900 mb-2"),
+            el.Text(_title),
+        };
+        const text = .{
+            attr.Class("text-gray-600"),
+            el.Text(_text),
+        };
+
+        fn New() [3]z.Node {
+            return .{
+                attr.Class("bg-white p-6 rounded-xl shadow-sm"),
+                el.Div(&title),
+                el.Div(&text),
+            };
+        }
+    };
+}
+
+fn Code(text: []const u8) type {
+    return struct {
+        const code = el.Div(&.{
+            attr.Class("bg-gray-900 rounded-lg p-4"),
+            el.Pre(&.{el.Code(&.{
+                attr.Class("language-zig"),
+                el.Text(text),
+            })}),
+        });
+
+        fn New() z.Node {
+            return code;
+        }
+    };
+}
+
+fn Snippet(title: []const u8, text: []const u8) type {
+    return struct {
+        const snip = el.Div(&.{
+            attr.Class("bg-white rounded-xl p-6 shadow-sm"),
+            el.H4(&.{
+                attr.Class("text-xl font-semibold text-gray-900 mb-4"),
+                el.Text(title),
+            }),
+            Code(text).New(),
+        });
+
+        fn New() z.Node {
+            return snip;
+        }
+    };
+}
 
 pub fn run(writer: std.ArrayList(u8).Writer) !void {
     const head = el.Head(&.{
@@ -43,21 +112,9 @@ pub fn run(writer: std.ArrayList(u8).Writer) !void {
                 }),
                 el.Nav(&.{
                     attr.Class("hidden md:flex items-center space-x-6"),
-                    el.A(&.{
-                        attr.Href("#features"),
-                        attr.Class("text-gray-600 hover:text-orange-500 transition-colors"),
-                        el.Text("Features"),
-                    }),
-                    el.A(&.{
-                        attr.Href("#examples"),
-                        attr.Class("text-gray-600 hover:text-orange-500 transition-colors"),
-                        el.Text("Examples"),
-                    }),
-                    el.A(&.{
-                        attr.Href("#getting-started"),
-                        attr.Class("text-gray-600 hover:text-orange-500 transition-colors"),
-                        el.Text("Get Started"),
-                    }),
+                    el.A(&NavLink("Features", "#features")),
+                    el.A(&NavLink("Examples", "#examples")),
+                    el.A(&NavLink("Getting Started", "#getting-started")),
                     el.A(&.{
                         attr.Href("https://github.com/eltNEG/zigomponent"),
                         attr.Class("bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"),
@@ -118,39 +175,9 @@ pub fn run(writer: std.ArrayList(u8).Writer) !void {
             }),
             el.Div(&.{
                 attr.Class("grid md:grid-cols-3 gap-8"),
-                el.Div(&.{
-                    attr.Class("bg-white p-6 rounded-xl shadow-sm"),
-                    el.H4(&.{
-                        attr.Class("text-xl font-semibold text-gray-900 mb-2"),
-                        el.Text("Type Safety"),
-                    }),
-                    el.P(&.{
-                        attr.Class("text-gray-600"),
-                        el.Text("Leverage Zig's compile-time type checking to catch HTML errors before runtime."),
-                    }),
-                }),
-                el.Div(&.{
-                    attr.Class("bg-white p-6 rounded-xl shadow-sm"),
-                    el.H4(&.{
-                        attr.Class("text-xl font-semibold text-gray-900 mb-2"),
-                        el.Text("Performance"),
-                    }),
-                    el.P(&.{
-                        attr.Class("text-gray-600"),
-                        el.Text("Zero-cost abstractions and compile-time optimizations for blazing fast HTML generation."),
-                    }),
-                }),
-                el.Div(&.{
-                    attr.Class("bg-white p-6 rounded-xl shadow-sm"),
-                    el.H4(&.{
-                        attr.Class("text-xl font-semibold text-gray-900 mb-2"),
-                        el.Text("Composable"),
-                    }),
-                    el.P(&.{
-                        attr.Class("text-gray-600"),
-                        el.Text("Build reusable components and compose them together for complex layouts."),
-                    }),
-                }),
+                el.Div(&Features("Type Safety", "Leverage Zig's compile-time type checking to catch HTML errors before runtime.").New()),
+                el.Div(&Features("Performance", "Zero-cost abstractions and compile-time optimizations for blazing fast HTML generation.").New()),
+                el.Div(&Features("Composable", "Build reusable components and compose them together for complex layouts.").New()),
             }),
         }),
     });
@@ -170,49 +197,7 @@ pub fn run(writer: std.ArrayList(u8).Writer) !void {
                     el.Text("Create HTML elements with native Zig syntax"),
                 }),
             }),
-            el.Div(&.{
-                attr.Class("bg-gray-900 rounded-xl p-6 overflow-x-auto"),
-                el.Pre(&.{
-                    el.Code(&.{
-                        attr.Class("language-zig"),
-                        el.Text(
-                            \\const allocator = std.heap.page_allocator;
-                            \\var arr = std.ArrayList(u8).init(allocator);
-                            \\defer arr.deinit();
-                            \\const writer = arr.writer();
-                            \\
-                            \\const html = el.Html(&.{
-                            \\    attr.Lang("en"),
-                            \\    el.Head(&.{
-                            \\        el.Title(&.{
-                            \\            el.Text("My Zig App"),
-                            \\        }),
-                            \\        el.Meta(&.{
-                            \\            attr.Charset("UTF-8"),
-                            \\        }),
-                            \\    }),
-                            \\    el.Body(&.{
-                            \\        el.H1(&.{
-                            \\            attr.Class("text-4xl font-bold text-center"),
-                            \\            el.Text("Welcome to Zigomponent!"),
-                            \\        }),
-                            \\        el.P(&.{
-                            \\            attr.Class("text-lg text-gray-600 mt-4"),
-                            \\            el.Text("Build HTML with the power of Zig."),
-                            \\        }),
-                            \\        el.Button(&.{
-                            \\            attr.Class("bg-blue-500 text-white px-4 py-2 rounded"),
-                            \\            attr.OnClick("alert('Hello from Zig!')"),
-                            \\            el.Text("Click me!"),
-                            \\        }),
-                            \\    }),
-                            \\});
-                            \\
-                            \\try html.render(writer);
-                        ),
-                    }),
-                }),
-            }),
+            Code(mainExample).New(),
         }),
     });
 
@@ -329,72 +314,8 @@ pub fn run(writer: std.ArrayList(u8).Writer) !void {
             }),
             el.Div(&.{
                 attr.Class("grid grid-cols-1 lg:grid-cols-2 gap-8 px-4"),
-                el.Div(&.{
-                    el.H4(&.{
-                        attr.Class("text-xl font-semibold text-gray-900 mb-4"),
-                        el.Text("Creating a Form"),
-                    }),
-                    el.Div(&.{
-                        attr.Class("bg-gray-900 rounded-lg p-4 overflow-x-auto"),
-                        el.Pre(&.{el.Code(&.{
-                            attr.Class("language-zig"),
-                            el.Text(
-                                \\const form = el.Form(&.{
-                                \\    attr.Action("/submit"),
-                                \\    attr.Method("POST"),
-                                \\    el.Input(&.{
-                                \\        attr.Type("text"),
-                                \\        attr.Name("username"),
-                                \\        attr.Placeholder("Enter username"),
-                                \\        attr.Required(),
-                                \\    }),
-                                \\    el.Input(&.{
-                                \\        attr.Type("password"),
-                                \\        attr.Name("password"),
-                                \\        attr.Placeholder("Enter password"),
-                                \\        attr.Required(),
-                                \\    }),
-                                \\    el.Button(&.{
-                                \\        attr.Type("submit"),
-                                \\        attr.Class("btn btn-primary"),
-                                \\        el.Text("Login"),
-                                \\    }),
-                                \\});
-                            ),
-                        })}),
-                    }),
-                }),
-                el.Div(&.{
-                    el.H4(&.{
-                        attr.Class("text-xl font-semibold text-gray-900 mb-4"),
-                        el.Text("Custom Components"),
-                    }),
-                    el.Div(&.{
-                        attr.Class("bg-gray-900 rounded-lg p-4 overflow-x-auto"),
-                        el.Pre(&.{el.Code(&.{
-                            attr.Class("language-zig"),
-                            el.Text(
-                                \\fn Card(title: []const u8, content: []const u8) Node {
-                                \\    return el.Div(&.{
-                                \\        attr.Class("card shadow-lg"),
-                                \\        el.Div(&.{
-                                \\            attr.Class("card-header"),
-                                \\            el.H3(&.{
-                                \\                el.Text(title),
-                                \\            }),
-                                \\        }),
-                                \\        el.Div(&.{
-                                \\            attr.Class("card-body"),
-                                \\            el.P(&.{
-                                \\                el.Text(content),
-                                \\            }),
-                                \\        }),
-                                \\    });
-                                \\}
-                            ),
-                        })}),
-                    }),
-                }),
+                Snippet("Creating a Form", formExample).New(),
+                Snippet("Custom Components", cardExample).New(),
             }),
         }),
     });
@@ -417,67 +338,9 @@ pub fn run(writer: std.ArrayList(u8).Writer) !void {
             }),
             el.Div(&.{
                 attr.Class("space-y-8"),
-                el.Div(&.{
-                    attr.Class("bg-white rounded-xl p-6 shadow-sm"),
-                    el.H4(&.{
-                        attr.Class("text-xl font-semibold text-gray-900 mb-4"),
-                        el.Text("1. Add to your build.zig"),
-                    }),
-                    el.Div(&.{
-                        attr.Class("bg-gray-900 rounded-lg p-4"),
-                        el.Pre(&.{el.Code(&.{
-                            attr.Class("language-zig"),
-                            el.Text(
-                                \\const zigomponent = b.dependency("zigomponent", .{
-                                \\    .target = target,
-                                \\    .optimize = optimize,
-                                \\});
-                                \\
-                                \\exe.root_module.addImport("zigomponent", zigomponent.module("zigomponent"));
-                            ),
-                        })}),
-                    }),
-                }),
-                el.Div(&.{
-                    attr.Class("bg-white rounded-xl p-6 shadow-sm"),
-                    el.H4(&.{
-                        attr.Class("text-xl font-semibold text-gray-900 mb-4"),
-                        el.Text("2. Import in your code"),
-                    }),
-                    el.Div(&.{
-                        attr.Class("bg-gray-900 rounded-lg p-4"),
-                        el.Pre(&.{el.Code(&.{
-                            attr.Class("language-zig"),
-                            el.Text(
-                                \\const std = @import("std");
-                                \\const el = @import("zigomponent");
-                            ),
-                        })}),
-                    }),
-                }),
-                el.Div(&.{
-                    attr.Class("bg-white rounded-xl p-6 shadow-sm"),
-                    el.H4(&.{
-                        attr.Class("text-xl font-semibold text-gray-900 mb-4"),
-                        el.Text("3. Start building"),
-                    }),
-                    el.Div(&.{
-                        attr.Class("bg-gray-900 rounded-lg p-4"),
-                        el.Pre(&.{el.Code(&.{
-                            attr.Class("language-zig"),
-                            el.Text(
-                                \\const page = el.Html(&.{
-                                \\    attr.Lang("en"),
-                                \\    el.Body(&.{
-                                \\        el.H1(&.{
-                                \\            el.Text("Hello, Zigomponent!"),
-                                \\        }),
-                                \\    }),
-                                \\});
-                            ),
-                        })}),
-                    }),
-                }),
+                Snippet("1. Add to your build.zig", addDependency).New(),
+                Snippet("2. Import in your code", importDependency).New(),
+                Snippet("3. Use in your code", useComponents).New(),
             }),
         }),
     });
@@ -494,11 +357,14 @@ pub fn run(writer: std.ArrayList(u8).Writer) !void {
         footer,
     });
 
-    const html = el.ToNode(&.{ el.Raw("<!DOCTYPE html>"), el.Html(&.{
-        attr.Lang("en"),
-        head,
-        body,
-    }) });
+    const html = el.ToNode(&.{
+        el.Raw("<!DOCTYPE html>"),
+        el.Html(&.{
+            attr.Lang("en"),
+            head,
+            body,
+        }),
+    });
 
     try html.render(writer);
 }
