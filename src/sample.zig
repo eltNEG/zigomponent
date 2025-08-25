@@ -75,12 +75,50 @@ fn Snippet(title: []const u8, text: []const u8) type {
 pub fn run(writer: std.ArrayList(u8).Writer) !void {
     const head = el.Head(&.{
         el.Meta(&.{attr.Charset("UTF-8")}),
-        el.Meta(&.{ attr.Name("viewport"), attr.Content("width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0") }),
+        el.Meta(&.{ attr.Name("viewport"), attr.Content("width=device-width, initial-scale=1, maximum-scale=5, user-scalable=1") }),
+        el.Meta(&.{ attr.Name("description"), attr.Content("Zigomponent is a library for generating HTML in Zig") }),
+        el.Meta(&.{ attr.Name("keywords"), attr.Content("Zig, HTML, generation, library, Zigomponent") }),
+        el.Meta(&.{ attr.Name("author"), attr.Content("eltneg") }),
         el.Title(&.{el.Text("Zigomponent - HTML Generation for Zig")}),
         el.Script(&.{attr.Src("https://cdn.tailwindcss.com")}),
         el.Link(&.{
             attr.Href("https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"),
             attr.Rel("stylesheet"),
+        }),
+        el.Link(&.{
+            attr.Rel("apple-touch-icon"),
+            attr.Sizes("180x180"),
+            attr.Href("/apple-touch-icon.png"),
+        }),
+        el.Link(&.{
+            attr.Rel("icon"),
+            attr.Type("image/png"),
+            attr.Sizes("32x32"),
+            attr.Href("/favicon-32x32.png"),
+        }),
+        el.Link(&.{
+            attr.Rel("icon"),
+            attr.Type("image/png"),
+            attr.Sizes("16x16"),
+            attr.Href("/favicon-16x16.png"),
+        }),
+        el.Link(&.{
+            attr.Rel("manifest"),
+            attr.Href("/site.webmanifest"),
+        }),
+        el.Link(&.{
+            attr.Rel("shortcut icon"),
+            attr.Href("/favicon.ico"),
+        }),
+        el.Link(&.{
+            attr.Rel("android-chrome-icon-192x192"),
+            attr.Sizes("192x192"),
+            attr.Href("/android-chrome-192x192.png"),
+        }),
+        el.Link(&.{
+            attr.Rel("android-chrome-icon-512x512"),
+            attr.Sizes("512x512"),
+            attr.Href("/android-chrome-512x512.png"),
         }),
         el.Script(&.{
             attr.Src("https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"),

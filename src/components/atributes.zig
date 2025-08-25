@@ -157,6 +157,10 @@ pub fn Href(value: []const u8) Node {
     return Attr("href", value);
 }
 
+pub fn Sizes(value: []const u8) Node {
+    return Attr("sizes", value);
+}
+
 pub fn ID(value: []const u8) Node {
     return Attr("id", value);
 }

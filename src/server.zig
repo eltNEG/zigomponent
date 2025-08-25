@@ -13,12 +13,21 @@ pub fn runServer(page: []u8) !void {
 
     log.info("Start HTTP server at {s}", .{"http://localhost:3006"});
 
+    const favicon = @embedFile("assets/favicon.ico");
+    const appleTouchIcon = @embedFile("assets/apple-touch-icon.png");
+    const icon32 = @embedFile("assets/favicon-32x32.png");
+    const icon16 = @embedFile("assets/favicon-16x16.png");
+    const manifest = @embedFile("assets/site.webmanifest");
+    const androidChrome512 = @embedFile("assets/android-chrome-512x512.png");
+    const androidChrome192 = @embedFile("assets/android-chrome-192x192.png");
+    const assets = [_][]const u8{ favicon, appleTouchIcon, icon32, icon16, manifest, androidChrome512, androidChrome192 };
+
     while (true) {
         const conn = server.accept() catch |err| {
             log.err("failed to accept connection: {s}", .{@errorName(err)});
             continue;
         };
-        _ = std.Thread.spawn(.{}, accept, .{ conn, page }) catch |err| {
+        _ = std.Thread.spawn(.{}, accept, .{ conn, page, &assets }) catch |err| {
             log.err("unable to spawn connection thread: {s}", .{@errorName(err)});
             conn.stream.close();
             continue;
@@ -26,7 +35,7 @@ pub fn runServer(page: []u8) !void {
     }
 }
 
-fn accept(conn: Connection, page: []u8) !void {
+fn accept(conn: Connection, page: []u8, assets: []const []const u8) !void {
     defer conn.stream.close();
     var read_buffer: [MAX_BUF]u8 = undefined;
     var in = conn.stream.reader(&read_buffer);
@@ -39,13 +48,68 @@ fn accept(conn: Connection, page: []u8) !void {
             else => return err,
         };
 
-        try serveHTTP(&request, page);
+        try serveHTTP(&request, page, assets);
     }
 }
 
-fn serveHTTP(request: *Request, page: []u8) !void {
-    try request.respond(
-        page,
-        .{},
-    );
+fn serveHTTP(request: *Request, page: []u8, assets: []const []const u8) !void {
+    if (request.head.method == .GET and std.mem.eql(u8, request.head.target, "/favicon.ico")) {
+        try request.respond(
+            assets[0],
+            .{},
+        );
+        return;
+    }
+    if (request.head.method == .GET and std.mem.eql(u8, request.head.target, "/apple-touch-icon.png")) {
+        try request.respond(
+            assets[1],
+            .{},
+        );
+        return;
+    }
+    if (request.head.method == .GET and std.mem.eql(u8, request.head.target, "/favicon-32x32.png")) {
+        try request.respond(
+            assets[2],
+            .{},
+        );
+        return;
+    }
+    if (request.head.method == .GET and std.mem.eql(u8, request.head.target, "/favicon-16x16.png")) {
+        try request.respond(
+            assets[3],
+            .{},
+        );
+        return;
+    }
+    if (request.head.method == .GET and std.mem.eql(u8, request.head.target, "/site.webmanifest")) {
+        try request.respond(
+            assets[4],
+            .{},
+        );
+        return;
+    }
+    if (request.head.method == .GET and std.mem.eql(u8, request.head.target, "/android-chrome-192x192.png")) {
+        try request.respond(
+            assets[5],
+            .{},
+        );
+        return;
+    }
+    if (request.head.method == .GET and std.mem.eql(u8, request.head.target, "/android-chrome-512x512.png")) {
+        try request.respond(
+            assets[6],
+            .{},
+        );
+        return;
+    }
+    if (request.head.method == .GET and std.mem.eql(u8, request.head.target, "/")) {
+        try request.respond(
+            page,
+            .{},
+        );
+    }
+
+    try request.respond("Not Found", .{
+        .status = .not_found,
+    });
 }
