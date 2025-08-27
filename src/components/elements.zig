@@ -202,12 +202,36 @@ pub fn Text(text: []const u8) Node {
     return Node.text(text);
 }
 
-pub fn Title(nodes: ?[]const Node) Node {
-    return Element("title", nodes);
+pub fn Title(comptime text: []const u8) Node {
+    return _Title(text).New();
+}
+
+fn _Title(text: []const u8) type {
+    return struct {
+        const title = Element("title", &[_]Node{Text(text)});
+
+        pub fn New() Node {
+            return title;
+        }
+    };
 }
 
 pub fn Script(nodes: ?[]const Node) Node {
     return Element("script", nodes);
+}
+
+pub fn JSScript(comptime text: []const u8) Node {
+    return _Script(text).New();
+}
+
+fn _Script(text: []const u8) type {
+    return struct {
+        const script = Element("script", &[_]Node{Text(text)});
+
+        pub fn New() Node {
+            return script;
+        }
+    };
 }
 
 pub fn Pre(nodes: ?[]const Node) Node {

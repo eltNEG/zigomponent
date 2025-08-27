@@ -79,7 +79,7 @@ pub fn run(writer: std.ArrayList(u8).Writer) !void {
         el.Meta(&.{ attr.Name("description"), attr.Content("Zigomponent is a library for generating HTML in Zig") }),
         el.Meta(&.{ attr.Name("keywords"), attr.Content("Zig, HTML, generation, library, Zigomponent") }),
         el.Meta(&.{ attr.Name("author"), attr.Content("eltneg") }),
-        el.Title(&.{el.Text("Zigomponent - HTML Generation for Zig")}),
+        el.Title("Zigomponent - HTML Generation for Zig"),
         el.Script(&.{attr.Src("https://cdn.tailwindcss.com")}),
         el.Link(&.{
             attr.Href("https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"),
@@ -239,22 +239,20 @@ pub fn run(writer: std.ArrayList(u8).Writer) !void {
         }),
     });
 
-    const script = el.Script(&.{
-        el.Text(
-            \\document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-            \\    anchor.addEventListener("click", function (e) {
-            \\        e.preventDefault();
-            \\        const target = document.querySelector(this.getAttribute("href"));
-            \\        if (target) {
-            \\            target.scrollIntoView({
-            \\                behavior: "smooth",
-            \\                block: "start",
-            \\            });
-            \\        }
-            \\    });
-            \\});
-        ),
-    });
+    const script = el.JSScript(
+        \\document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        \\    anchor.addEventListener("click", function (e) {
+        \\        e.preventDefault();
+        \\        const target = document.querySelector(this.getAttribute("href"));
+        \\        if (target) {
+        \\            target.scrollIntoView({
+        \\                behavior: "smooth",
+        \\                block: "start",
+        \\            });
+        \\        }
+        \\    });
+        \\});
+    );
 
     const footer = el.Footer(&.{
         attr.Class("bg-gray-900 text-white py-12"),
