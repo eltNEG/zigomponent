@@ -2,6 +2,29 @@ const std = @import("std");
 const assert = @import("std").debug.assert;
 const renderErr = @import("../errors/render.zig").RenderError;
 
+pub fn Writer(comptime T: type, comptime initial: []const T, comptime new: []const T) type {
+    return struct {
+        const store: []const T = initial ++ new;
+
+        fn Write(comptime value: []const T) type {
+            return Writer(T, store, value);
+        }
+
+        fn write(comptime value: []const T) type {
+            return Writer(T, store, value);
+        }
+
+        pub fn Value() []const T {
+            return store;
+        }
+    };
+}
+
+test "writer" {
+    const writer = Writer(u8, "Hello", "World");
+    std.testing.expectEqualStrings(writer.Value(), "HelloWorld");
+}
+
 pub const NodeType = enum { element, text, childless, attribute, nodes };
 
 pub const Node = struct {
@@ -33,6 +56,66 @@ pub const Node = struct {
         value: ?[]const u8,
     };
 
+    pub fn render2(self: *const Node, _mem: type) type {
+        switch (self.data) {
+            .element => |elem| {
+                var mem = _mem.write("<");
+                mem = mem.write(elem.name);
+                if (elem.children) |children| {
+                    for (children) |*child| {
+                        if (child.node_type == .attribute) {
+                            mem = child.render2(mem);
+                        }
+                    }
+                }
+                mem = mem.write(">");
+                if (elem.children) |children| {
+                    for (children) |*child| {
+                        if (child.node_type != .attribute) {
+                            mem = child.render2(mem);
+                        }
+                    }
+                }
+                mem = mem.write("</");
+                mem = mem.write(elem.name);
+                mem = mem.write(">");
+                return mem;
+            },
+            .text => |txt| {
+                return _mem.write(txt.content);
+            },
+            .childless => |childlessElem| {
+                var mem = _mem.write("<");
+                mem = mem.write(childlessElem.name);
+                if (childlessElem.children) |children| {
+                    for (children) |*child| {
+                        assert(child.node_type == .attribute);
+                        mem = child.render2(mem);
+                    }
+                }
+                return mem.write("/>");
+            },
+            .attribute => |attr| {
+                var mem = _mem.write(" ");
+                mem = mem.write(attr.name);
+                if (attr.value) |attrValue| {
+                    mem = mem.write("=\"");
+                    mem = mem.write(attrValue);
+                    mem = mem.write("\"");
+                }
+                return mem;
+            },
+            .nodes => |nodes| {
+                var mem = _mem;
+                if (nodes.children) |children| {
+                    for (children) |*child| {
+                        mem = child.render2(mem);
+                    }
+                }
+                return mem;
+            },
+        }
+    }
     pub fn render(self: *const Node, mem: std.ArrayList(u8).Writer) renderErr!void {
         switch (self.data) {
             .element => |elem| {
